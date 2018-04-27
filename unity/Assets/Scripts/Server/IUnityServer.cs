@@ -15,10 +15,8 @@
 using System;
 using UnityEngine.Networking;
 
-namespace Server
-{
-    public interface IUnityServer
-    {
+namespace Server {
+    public interface IUnityServer {
         /// <summary>
         /// Start the listening server.
         /// </summary>
@@ -28,7 +26,7 @@ namespace Server
         /// <summary>
         /// Shuts down the server and closes all connections
         /// </summary>
-        void Shutdown();
+        void ShutdownNetwork();
 
         /// <summary>
         /// Change the port the server starts on.

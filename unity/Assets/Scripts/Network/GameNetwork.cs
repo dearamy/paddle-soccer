@@ -20,15 +20,13 @@ using Server;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Network
-{
+namespace Network {
     /// <summary>
     /// The overall network manager. Delegates as much work as possible to
     /// GameClient and GameServer.
     /// </summary>
-    public class GameNetwork : NetworkManager, IUnityServer, IUnityClient
-    {
-        public readonly string Version = "0.1";
+    public class GameNetwork : NetworkManager, IUnityServer, IUnityClient {
+        [Header("GameNetwork")] public readonly string Version = "0.1";
 
         /// <summary>
         /// How many players have joined the game?
@@ -38,17 +36,13 @@ namespace Network
         /// <summary>
         /// Starts eiter a client or a server - depending on if headless or not.
         /// </summary>
-        private void Start()
-        {
+        private void Start() {
             Debug.LogFormat("[GameNetwork] Starting Client or Server? {0}", Version);
 
-            if (UnityInfo.IsHeadless())
-            {
+            if (UnityInfo.IsHeadless()) {
                 Debug.Log("[GameNetwork] Starting Server");
                 GameServer.Start(this);
-            }
-            else
-            {
+            } else {
                 Debug.Log("[GameNetwork] Starting Client");
                 GameClient.Start(this, Environment.GetCommandLineArgs());
             }
@@ -60,8 +54,7 @@ namespace Network
         /// Run when the server is started. Delegates to GameServer.OnServerConnect
         /// </summary>
         /// <param name="conn"></param>
-        public override void OnServerConnect(NetworkConnection conn)
-        {
+        public override void OnServerConnect(NetworkConnection conn) {
             base.OnServerConnect(conn);
             GameServer.OnServerConnect(conn);
         }
@@ -71,8 +64,7 @@ namespace Network
         /// </summary>
         /// <param name="conn"></param>
         /// <param name="playerControllerId"></param>
-        public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
-        {
+        public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
             base.OnServerAddPlayer(conn, playerControllerId);
             var playerController = conn.playerControllers[playerControllerId];
             GameServer.OnServerAddPlayer(playerController.gameObject);
@@ -85,10 +77,7 @@ namespace Network
         /// as set in the Unity editor.
         /// </summary>
         /// <param name="host">The server host</param>
-        public void SetHost(string host)
-        {
-            networkAddress = host;
-        }
+        public void SetHost(string host) { networkAddress = host; }
 
         /// <summary>
         /// Asyncronously polls a HTTP endpoint every 2 seconds, until lambda returns true
@@ -96,8 +85,7 @@ namespace Network
         /// </summary>
         /// <param name="host">The host url to post to</param>
         /// <param name="lambda">lambda called on each request</param>
-        public void PollGetHTTP(string host, Func<UnityWebRequest, bool> lambda)
-        {
+        public void PollGetHTTP(string host, Func<UnityWebRequest, bool> lambda) {
             StartCoroutine(AsyncPollGetHTTP(host, lambda));
         }
 
@@ -106,25 +94,19 @@ namespace Network
         /// </summary>
         /// <param name="host">the host url to make the GET Request</param>
         /// <param name="lambda">The lambda that is called on completion</param>
-        private IEnumerator AsyncPollGetHTTP(string host, Func<UnityWebRequest, bool> lambda)
-        {
+        private IEnumerator AsyncPollGetHTTP(string host, Func<UnityWebRequest, bool> lambda) {
             Debug.LogFormat("[GameNetwork] Getting data: {0}", host);
 
-            using (var get = UnityWebRequest.Get(host))
-            {
-                yield return get.Send();
+            using (var get = UnityWebRequest.Get(host)) {
+                yield return get.SendWebRequest();
 
-                if (get.isError)
-                {
+                if (get.isNetworkError) {
                     Debug.Log(get.error);
-                }
-                else
-                {
+                } else {
                     Debug.Log("[GameNetwork] Get Complete");
                     var success = lambda(get);
 
-                    if (!success)
-                    {
+                    if (!success) {
                         yield return new WaitForSeconds(2);
                         StartCoroutine(AsyncPollGetHTTP(host, lambda));
                     }
@@ -141,8 +123,7 @@ namespace Network
         /// <param name="host">The host url to call</param>
         /// <param name="body">Body string to send as the POST body</param>
         /// <param name="lambda">Lambda called on successful post</param>
-        public void PostHTTP(string host, string body, Action<UnityWebRequest> lambda = null)
-        {
+        public void PostHTTP(string host, string body, Action<UnityWebRequest> lambda = null) {
             StartCoroutine(AsyncPostHTTP(host, body, lambda));
         }
 
@@ -152,34 +133,27 @@ namespace Network
         /// <param name="host">The host url to call</param>
         /// <param name="body">Body string to send as the POST body</param>
         /// <param name="lambda">Lambda called on successful post</param>
-        private IEnumerator AsyncPostHTTP(string host, string body, Action<UnityWebRequest> lambda)
-        {
+        private IEnumerator AsyncPostHTTP(string host, string body, Action<UnityWebRequest> lambda) {
             Debug.LogFormat("[GameNetwork] Posting to: {0} data: {1}", host, body);
 
             // give it a null payload - because easy.
-            if (body == null)
-            {
+            if (body == null) {
                 body = "{}";
             }
 
             var bytes = Encoding.UTF8.GetBytes(body);
 
-            using (var post = UnityWebRequest.Put(host, bytes))
-            {
+            using (var post = UnityWebRequest.Put(host, bytes)) {
                 //switch it back to being post
                 post.method = UnityWebRequest.kHttpVerbPOST;
 
-                yield return post.Send();
+                yield return post.SendWebRequest();
 
-                if (post.isError)
-                {
+                if (post.isNetworkError) {
                     Debug.Log(post.error);
-                }
-                else
-                {
+                } else {
                     Debug.Log("[GameNetwork] Post complete!");
-                    if (lambda != null)
-                    {
+                    if (lambda != null) {
                         lambda(post);
                     }
                 }
@@ -189,9 +163,8 @@ namespace Network
         /// <summary>
         /// Close all connections, and then exits the servers
         /// </summary>
-        public void Shutdown()
-        {
-            NetworkManager.Shutdown();
+        public void ShutdownNetwork() {
+            Shutdown();
             Application.Quit();
         }
 
@@ -200,9 +173,6 @@ namespace Network
         /// as set in the Unity editor.
         /// </summary>
         /// <param name="port">The port to use</param>
-        public void SetPort(int port)
-        {
-            networkPort = port;
-        }
+        public void SetPort(int port) { networkPort = port; }
     }
 }

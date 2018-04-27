@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-﻿using System;
+using System;
 using UnityEngine.Networking;
 
-namespace Client
-{
+namespace Client {
     /// <summary>
     /// Interface for a network client
     /// </summary>
-    public interface IUnityClient
-    {
+    public interface IUnityClient {
         /// <summary>
         /// Change where the server host location
         /// </summary>

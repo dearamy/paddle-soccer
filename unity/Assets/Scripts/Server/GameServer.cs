@@ -190,7 +190,7 @@ namespace Server
         /// </summary>
         public static void Stop()
         {
-            instance.server.Shutdown();
+            instance.server.ShutdownNetwork();
             OnGameReady = null;
             instance = null;
         }
