@@ -15,28 +15,23 @@
 using System;
 using UnityEngine;
 
-namespace Game
-{
+namespace Game {
     /// <summary>
     /// Utility for managing what happens to Goals.
     /// </summary>
-    public static class Goals
-    {
+    public static class Goals {
         /// <summary>
         /// Rseturns a event handler for the TriggerObservable that
         /// only fires when the ball goes into the goal.
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        public static TriggerObservable.Triggered OnBallGoal(Action<Collider> action)
-        {
-            return collider =>
-            {
-                if (collider.name == Ball.Name)
-                {
-                    action(collider);
-                }
-            };
+        public static TriggerObservable.Triggered OnBallGoal(Action<Collider> action) {
+            return collider => {
+                       if (collider.name == Ball.Name) {
+                           action(collider);
+                       }
+                   };
         }
     }
 }

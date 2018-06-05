@@ -31,12 +31,12 @@ namespace Network {
         /// <summary>
         /// How many players have joined the game?
         /// </summary>
-        private int connCount;
+        int connCount;
 
         /// <summary>
         /// Starts eiter a client or a server - depending on if headless or not.
         /// </summary>
-        private void Start() {
+        void Start() {
             Debug.LogFormat("[GameNetwork] Starting Client or Server? {0}", Version);
 
             if (UnityInfo.IsHeadless()) {
@@ -89,30 +89,6 @@ namespace Network {
             StartCoroutine(AsyncPollGetHTTP(host, lambda));
         }
 
-        /// <summary>
-        /// Implementation of asyncronous polling of a HTTP endpoint
-        /// </summary>
-        /// <param name="host">the host url to make the GET Request</param>
-        /// <param name="lambda">The lambda that is called on completion</param>
-        private IEnumerator AsyncPollGetHTTP(string host, Func<UnityWebRequest, bool> lambda) {
-            Debug.LogFormat("[GameNetwork] Getting data: {0}", host);
-
-            using (var get = UnityWebRequest.Get(host)) {
-                yield return get.SendWebRequest();
-
-                if (get.isNetworkError) {
-                    Debug.Log(get.error);
-                } else {
-                    Debug.Log("[GameNetwork] Get Complete");
-                    var success = lambda(get);
-
-                    if (!success) {
-                        yield return new WaitForSeconds(2);
-                        StartCoroutine(AsyncPollGetHTTP(host, lambda));
-                    }
-                }
-            }
-        }
 
         // --- Client & Server Commands ---
 
@@ -127,13 +103,29 @@ namespace Network {
             StartCoroutine(AsyncPostHTTP(host, body, lambda));
         }
 
+
+        /// <summary>
+        /// Close all connections, and then exits the servers
+        /// </summary>
+        public void ShutdownNetwork() {
+            Shutdown();
+            Application.Quit();
+        }
+
+        /// <summary>
+        /// Change the Server/Client port settings from the default
+        /// as set in the Unity editor.
+        /// </summary>
+        /// <param name="port">The port to use</param>
+        public void SetPort(int port) { networkPort = port; }
+
         /// <summary>
         /// Implementation of asyncronous call to POST HTTP
         /// </summary>
         /// <param name="host">The host url to call</param>
         /// <param name="body">Body string to send as the POST body</param>
         /// <param name="lambda">Lambda called on successful post</param>
-        private IEnumerator AsyncPostHTTP(string host, string body, Action<UnityWebRequest> lambda) {
+        IEnumerator AsyncPostHTTP(string host, string body, Action<UnityWebRequest> lambda) {
             Debug.LogFormat("[GameNetwork] Posting to: {0} data: {1}", host, body);
 
             // give it a null payload - because easy.
@@ -161,18 +153,28 @@ namespace Network {
         }
 
         /// <summary>
-        /// Close all connections, and then exits the servers
+        /// Implementation of asyncronous polling of a HTTP endpoint
         /// </summary>
-        public void ShutdownNetwork() {
-            Shutdown();
-            Application.Quit();
-        }
+        /// <param name="host">the host url to make the GET Request</param>
+        /// <param name="lambda">The lambda that is called on completion</param>
+        IEnumerator AsyncPollGetHTTP(string host, Func<UnityWebRequest, bool> lambda) {
+            Debug.LogFormat("[GameNetwork] Getting data: {0}", host);
 
-        /// <summary>
-        /// Change the Server/Client port settings from the default
-        /// as set in the Unity editor.
-        /// </summary>
-        /// <param name="port">The port to use</param>
-        public void SetPort(int port) { networkPort = port; }
+            using (var get = UnityWebRequest.Get(host)) {
+                yield return get.SendWebRequest();
+
+                if (get.isNetworkError) {
+                    Debug.Log(get.error);
+                } else {
+                    Debug.Log("[GameNetwork] Get Complete");
+                    var success = lambda(get);
+
+                    if (!success) {
+                        yield return new WaitForSeconds(2);
+                        StartCoroutine(AsyncPollGetHTTP(host, lambda));
+                    }
+                }
+            }
+        }
     }
 }

@@ -17,34 +17,25 @@ using System.Collections;
 using Game;
 using UnityEngine;
 
-namespace Server.Controllers
-{
+namespace Server.Controllers {
     /// <summary>
     /// Manages the score and goals for both players
     /// </summary>
-    public class ScoreController : MonoBehaviour, IScoreController
-    {
-        [SerializeField]
-        [Tooltip("Goal #1")]
-        private GameObject goal1;
+    public class ScoreController : MonoBehaviour, IScoreController {
+        [SerializeField] [Tooltip("Goal #1")] GameObject goal1;
 
-        [SerializeField]
-        [Tooltip("Goal #2")]
-        private GameObject goal2;
+        [SerializeField] [Tooltip("Goal #2")] GameObject goal2;
 
-        private ScoreControllerLogic logic;
+        ScoreControllerLogic logic;
 
         // --- Messages ---
 
-        private void OnValidate()
-        {
-            if (goal1 == null)
-            {
+        void OnValidate() {
+            if (goal1 == null) {
                 throw new Exception("[ScoreController] goal1 is null. This is bad");
             }
 
-            if (goal2 == null)
-            {
+            if (goal2 == null) {
                 throw new Exception("[ScoreController] goal2 is null. This is bad");
             }
         }
@@ -52,8 +43,7 @@ namespace Server.Controllers
         /// <summary>
         /// Connect OnGameReady to connect players to their respective goals
         /// </summary>
-        private void Start()
-        {
+        void Start() {
             logic = new ScoreControllerLogic(this);
             GameServer.OnGameReady += ConnectPlayerGoals;
             GameServer.OnGameReady += ConnectDisconnectOnWin;
@@ -64,8 +54,7 @@ namespace Server.Controllers
         /// <summary>
         /// Connect Players to their respective Goals.
         /// </summary>
-        private void ConnectPlayerGoals()
-        {
+        void ConnectPlayerGoals() {
             Debug.Log("Connecting Players to Goals!");
             var players = GameServer.GetPlayers();
 
@@ -81,8 +70,7 @@ namespace Server.Controllers
         /// <summary>
         /// Connect up to each player score, so that the server will disconnect on winning
         /// </summary>
-        private void ConnectDisconnectOnWin()
-        {
+        void ConnectDisconnectOnWin() {
             GameServer.GetPlayers().ForEach(x => x.GetComponent<PlayerScore>().ScoreChange += logic.DisconnectOnWin);
         }
 
@@ -90,18 +78,14 @@ namespace Server.Controllers
         /// Stop the server after a number of seconds
         /// </summary>
         /// <param name="seconds"></param>
-        public void DelayedStopServer(int seconds)
-        {
-            StartCoroutine(StopServer(seconds));
-        }
+        public void DelayedStopServer(int seconds) { StartCoroutine(StopServer(seconds)); }
 
         /// <summary>
         /// Coroutine for stopping the server, after a 5 second wait
         /// </summary>
         /// <param name="seconds"></param>
         /// <returns></returns>
-        private IEnumerator StopServer(int seconds)
-        {
+        IEnumerator StopServer(int seconds) {
             yield return new WaitForSeconds(seconds);
             GameServer.Stop();
         }

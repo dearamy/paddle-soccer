@@ -12,19 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-﻿using UnityEngine.Rendering;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// Utilities for finding out information about the Unity instance
 /// </summary>
-public static class UnityInfo
-{
+public static class UnityInfo {
     /// <summary>
     /// Detect headless mode (which has graphicsDeviceType Null)
     /// </summary>
     /// <returns>of the game is headless (has a gpu)</returns>
-    public static bool IsHeadless()
-    {
-        return UnityEngine.SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null;
-    }
+    public static bool IsHeadless() { return UnityEngine.SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null; }
 }

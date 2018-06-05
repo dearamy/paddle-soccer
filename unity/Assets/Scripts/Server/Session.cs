@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-﻿using System;
+using System;
 
-namespace Server
-{
+namespace Server {
     /// <summary>
     /// Serialisable session - for talking to the session server
     /// </summary>
     [Serializable]
-    public class Session
-    {
+    public class Session {
         public string id;
         public int port;
     }

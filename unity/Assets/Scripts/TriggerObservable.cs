@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
- using UnityEngine;
+using UnityEngine;
 
 /// <summary>
 /// Observable event for when collision triggers occur
 /// on isTrigger Collisionable Game Objects
 /// </summary>
 [RequireComponent(typeof(Collider))]
-public class TriggerObservable : MonoBehaviour
-{
+public class TriggerObservable : MonoBehaviour {
     /// <summary>
     /// Delegate for when a trigger event occurs
     /// </summary>
@@ -46,10 +45,8 @@ public class TriggerObservable : MonoBehaviour
     /// Fires TriggerEnter event
     /// </summary>
     /// <param name="other"></param>
-    private void OnTriggerEnter(Collider other)
-    {
-        if (TriggerEnter != null)
-        {
+    void OnTriggerEnter(Collider other) {
+        if (TriggerEnter != null) {
             TriggerEnter(other);
         }
     }
@@ -58,10 +55,8 @@ public class TriggerObservable : MonoBehaviour
     /// Fires TriggerExit event
     /// </summary>
     /// <param name="other"></param>
-    private void OnTriggerExit(Collider other)
-    {
-        if (TriggerExit != null)
-        {
+    void OnTriggerExit(Collider other) {
+        if (TriggerExit != null) {
             TriggerExit(other);
         }
     }
@@ -70,10 +65,8 @@ public class TriggerObservable : MonoBehaviour
     /// Fires TriggerStay event
     /// </summary>
     /// <param name="other"></param>
-    private void OnTriggerStay(Collider other)
-    {
-        if (TriggerStay != null)
-        {
+    void OnTriggerStay(Collider other) {
+        if (TriggerStay != null) {
             TriggerStay(other);
         }
     }

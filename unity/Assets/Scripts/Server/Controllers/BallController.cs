@@ -17,34 +17,27 @@ using Game;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Server.Controllers
-{
+namespace Server.Controllers {
     /// <summary>
     /// Create a ball. Once there is a Goal, create a new
     /// ball at the given time frame.
     /// </summary>
-    public class BallController : NetworkBehaviour
-    {
-        [SerializeField]
-        [Tooltip("The soccer ball prefab")]
-        private GameObject prefabBall;
+    public class BallController : NetworkBehaviour {
+        [SerializeField] [Tooltip("The soccer ball prefab")]
+        GameObject prefabBall;
 
-        [SerializeField]
-        [Tooltip("Goal #1")]
-        private GameObject goal1;
-        [SerializeField]
-        [Tooltip("Goal #2")]
-        private GameObject goal2;
+        [SerializeField] [Tooltip("Goal #1")] private GameObject goal1;
+        [SerializeField] [Tooltip("Goal #2")] private GameObject goal2;
 
         /// <summary>
         /// The current instance of the ball.
         /// </summary>
-        private GameObject currentBall;
+        GameObject currentBall;
 
         /// <summary>
         /// property to ensure we don't try and create a ball while creating a ball
         /// </summary>
-        private bool isGoal;
+        bool isGoal;
 
         // --- Messages ---
 
@@ -52,10 +45,8 @@ namespace Server.Controllers
         /// Make sure there is a ball prefab
         /// </summary>
         /// <exception cref="Exception">If the prefab is null, throws an exception</exception>
-        private void OnValidate()
-        {
-            if (prefabBall == null)
-            {
+        void OnValidate() {
+            if (prefabBall == null) {
                 throw new Exception("[Ball Controller] Ball prefab needs to be populated");
             }
         }
@@ -63,8 +54,7 @@ namespace Server.Controllers
         /// <summary>
         /// Call when two players have joined the game
         /// </summary>
-        private void Start()
-        {
+        void Start() {
             Debug.Log("[Ball Controller] Initialising...");
             isGoal = false;
 
@@ -79,10 +69,8 @@ namespace Server.Controllers
         /// <summary>
         /// Create a ball after 5 seconds. Removes the old one if there is one.
         /// </summary>
-        private void OnGoal(Collider _)
-        {
-            if (!isGoal)
-            {
+        void OnGoal(Collider _) {
+            if (!isGoal) {
                 isGoal = true;
                 Invoke("CreateBall", 5);
             }
@@ -91,14 +79,13 @@ namespace Server.Controllers
         /// <summary>
         /// Creates the ball
         /// </summary>
-        private void CreateBall()
-        {
+        void CreateBall() {
             Debug.Log("[Ball Controller] Creating a ball");
 
-            if (currentBall != null)
-            {
+            if (currentBall != null) {
                 Destroy(currentBall);
             }
+
             currentBall = Instantiate(prefabBall);
             currentBall.name = Ball.Name;
 

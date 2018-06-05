@@ -1,10 +1,8 @@
-namespace Server.Controllers
-{
+namespace Server.Controllers {
     /// <summary>
     /// Interface for the unity score controller
     /// </summary>
-    public interface IScoreController
-    {
+    public interface IScoreController {
         /// <summary>
         /// Stop the server after a number of seconds
         /// </summary>

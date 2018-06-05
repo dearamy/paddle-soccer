@@ -16,38 +16,32 @@ using Server;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Client
-{
+namespace Client {
     /// <summary>
     /// Moves the paddle around!
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(BoxCollider))]
     [RequireComponent(typeof(PlayerAction))]
-    public class PaddleInput : NetworkBehaviour
-    {
-        [SerializeField]
-        [Tooltip("Speed of horizontal movement")]
-        private float horizontalSpeed = 10f;
+    public class PaddleInput : NetworkBehaviour {
+        [SerializeField] [Tooltip("Speed of horizontal movement")]
+        float horizontalSpeed = 10f;
 
-        [SerializeField]
-        [Tooltip("Speed of rotation by mouse")]
-        private float rotationalSpeed = 5f;
+        [SerializeField] [Tooltip("Speed of rotation by mouse")]
+        float rotationalSpeed = 5f;
 
-        [SerializeField]
-        [Tooltip("How much to rotate when using the keyboard input")]
-        private float keyboardRotation = 0.5f;
+        [SerializeField] [Tooltip("How much to rotate when using the keyboard input")]
+        float keyboardRotation = 0.5f;
 
-        private Rigidbody rb;
-        private PlayerAction pa;
+        Rigidbody rb;
+        PlayerAction pa;
 
         // --- Messages ---
 
         /// <summary>
         /// Gab teh rigidbody and box collider
         /// </summary>
-        private void Start()
-        {
+        void Start() {
             rb = GetComponent<Rigidbody>();
             pa = GetComponent<PlayerAction>();
         }
@@ -55,12 +49,9 @@ namespace Client
         /// <summary>
         /// Handles kicks, if local player
         /// </summary>
-        private void Update()
-        {
-            if (isLocalPlayer)
-            {
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Fire1"))
-                {
+        void Update() {
+            if (isLocalPlayer) {
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Fire1")) {
                     pa.CmdKickBall();
                 }
             }
@@ -69,10 +60,8 @@ namespace Client
         /// <summary>
         /// Handels moving the rigidbody around via input
         /// </summary>
-        private void FixedUpdate()
-        {
-            if (isLocalPlayer)
-            {
+        void FixedUpdate() {
+            if (isLocalPlayer) {
                 KeyboardHorizontalInput();
                 PlayerRotation(Input.GetAxis("Mouse X"));
                 KeyboardRotation();
@@ -86,14 +75,12 @@ namespace Client
         /// going in, and provide a force that will do such a thing
         /// Credit and inspiration from: http://wiki.unity3d.com/index.php?title=RigidbodyFPSWalker
         /// </summary>
-        private void KeyboardHorizontalInput()
-        {
+        void KeyboardHorizontalInput() {
             var deltaX = Input.GetAxis("Horizontal");
             var deltaY = Input.GetAxis("Vertical");
 
             // skip this whole thing, if there is no input
-            if (!(deltaX == 0 && deltaY == 0))
-            {
+            if (!(deltaX == 0 && deltaY == 0)) {
                 var targetVelocity = new Vector3(deltaX, 0, deltaY) * horizontalSpeed;
                 // convert from local to world
                 targetVelocity = transform.TransformDirection(targetVelocity);
@@ -109,8 +96,7 @@ namespace Client
         /// Manages the rotation of the player
         /// </summary>
         /// <param name="axis"></param>
-        private void PlayerRotation(float axis)
-        {
+        void PlayerRotation(float axis) {
             axis = axis * rotationalSpeed;
             var rotation = Quaternion.Euler(0, transform.localEulerAngles.y + axis, 0);
             rb.MoveRotation(rotation);
@@ -119,14 +105,12 @@ namespace Client
         /// <summary>
         /// Optional keyboard rotation. Handy when using a trackpad.
         /// </summary>
-        private void KeyboardRotation()
-        {
-            if (Input.GetKey(KeyCode.LeftBracket))
-            {
+        void KeyboardRotation() {
+            if (Input.GetKey(KeyCode.LeftBracket)) {
                 PlayerRotation(-keyboardRotation);
             }
-            if (Input.GetKey(KeyCode.RightBracket))
-            {
+
+            if (Input.GetKey(KeyCode.RightBracket)) {
                 PlayerRotation(keyboardRotation);
             }
         }

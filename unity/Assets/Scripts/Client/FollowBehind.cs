@@ -12,29 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
- using UnityEngine;
+using UnityEngine;
 
-namespace Client
-{
+namespace Client {
     /// <summary>
     /// Follows at a distance behind a specified gameobject
     /// </summary>
-    public class FollowBehind : MonoBehaviour
-    {
-        [Tooltip("The transform to follow")]
-        public Transform target;
+    public class FollowBehind : MonoBehaviour {
+        [Tooltip("The transform to follow")] public Transform target;
 
-        [SerializeField]
-        [Tooltip("Distance to follow from")]
-        private float distance = 2.2f;
+        [SerializeField] [Tooltip("Distance to follow from")]
+        float distance = 2.2f;
 
         /// <summary>
         /// Set the position of the camera behind the player on each frame
         /// </summary>
-        private void Update()
-        {
-            if(target != null)
-            {
+        void Update() {
+            if (target != null) {
                 // maintain the y position
                 var yPosition = transform.position.y;
                 // maintain the x rotation
@@ -46,7 +40,8 @@ namespace Client
                 transform.position = diff;
 
                 transform.LookAt(target);
-                transform.rotation = Quaternion.Euler(xRotation, transform.localEulerAngles.y, transform.localEulerAngles.z);
+                transform.rotation =
+                    Quaternion.Euler(xRotation, transform.localEulerAngles.y, transform.localEulerAngles.z);
             }
         }
     }

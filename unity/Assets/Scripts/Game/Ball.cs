@@ -12,13 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-﻿namespace Game
-{
+namespace Game {
     /// <summary>
     /// Common ball operations.
     /// </summary>
-    public class Ball
-    {
+    public class Ball {
         public static readonly string Name = "Ball";
     }
 }
